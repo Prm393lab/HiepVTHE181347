@@ -7,22 +7,4 @@ class MovieService {
   List<Movie> getAllMovies() {
     return movieList;
   }
-
-  // Tìm kiếm phim theo tên
-  List<Movie> searchMovies(String query) {
-    if (query.isEmpty) return movieList;
-    final lowerQuery = query.toLowerCase();
-    return movieList
-        .where((m) => m.title.toLowerCase().contains(lowerQuery))
-        .toList();
-  }
-
-  // Lấy phim theo id
-  Movie? getMovieById(String id) {
-    try {
-      return movieList.firstWhere((m) => m.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
 }
