@@ -1,14 +1,14 @@
 import '../models/movie.dart';
 import '../repository/movie_repository.dart';
 
-// Service xử lý business logic liên quan đến phim
+// Service xử lý logic liên quan đến phim
 class MovieService {
   // Lấy toàn bộ danh sách phim
   List<Movie> getAllMovies() {
     return movieList;
   }
 
-  // Tìm kiếm phim theo tên (không phân biệt hoa thường)
+  // Tìm kiếm phim theo tên
   List<Movie> searchMovies(String query) {
     if (query.isEmpty) return movieList;
     final lowerQuery = query.toLowerCase();

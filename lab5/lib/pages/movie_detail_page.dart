@@ -1,27 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/movie.dart';
+import '../viewmodels/movie_detail_viewmodel.dart';
 
-class MovieDetailPage extends StatefulWidget {
+class MovieDetailPage extends ConsumerWidget {
   final Movie movie;
 
   const MovieDetailPage({super.key, required this.movie});
 
-  @override
-  State<MovieDetailPage> createState() => _MovieDetailPageState();
-}
-
-class _MovieDetailPageState extends State<MovieDetailPage> {
-  bool _isFavorite = false;
-
-  // Toggle yêu thích dùng setState
-  void _toggleFavorite() {
-    setState(() {
-      _isFavorite = !_isFavorite;
-    });
-  }
-
   // Hiển thị dialog đánh giá
-  void _onRate() {
+  void _onRate(BuildContext context) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -38,18 +26,19 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   }
 
   // Share snackbar
-  void _onShare() {
+  void _onShare(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Sharing "${widget.movie.title}"'),
+        content: Text('Sharing "${movie.title}"'),
         duration: const Duration(milliseconds: 1500),
       ),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    final movie = widget.movie;
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Lấy trạng thái yêu thích từ ViewModel thông qua Riverpod
+    final isFavorite = ref.watch(favoriteProvider(movie.id));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -170,26 +159,30 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      // Favorite với toggle state
+                      // Favorite với toggle state qua Riverpod
                       _ActionButton(
-                        icon: _isFavorite
+                        icon: isFavorite
                             ? Icons.favorite
                             : Icons.favorite_border,
                         label: 'Favorite',
-                        color: _isFavorite ? Colors.red : Colors.black,
-                        onTap: _toggleFavorite,
+                        color: isFavorite ? Colors.red : Colors.black,
+                        onTap: () =>
+                            ref
+                                    .read(favoriteProvider(movie.id).notifier)
+                                    .state =
+                                !isFavorite,
                       ),
                       _ActionButton(
                         icon: Icons.star_border,
                         label: 'Rate',
                         color: Colors.black,
-                        onTap: _onRate,
+                        onTap: () => _onRate(context),
                       ),
                       _ActionButton(
                         icon: Icons.share,
                         label: 'Share',
                         color: Colors.black,
-                        onTap: _onShare,
+                        onTap: () => _onShare(context),
                       ),
                     ],
                   ),

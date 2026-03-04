@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import '../models/movie.dart';
-import '../services/movie_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../viewmodels/home_viewmodel.dart';
 import 'movie_detail_page.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final movies = MovieService().getAllMovies();
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Lấy danh sách phim từ ViewModel thông qua Riverpod
+    final movies = ref.watch(moviesProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
@@ -55,9 +56,8 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-// Card phim theo đúng thiết kế ảnh 1
 class _MovieCard extends StatelessWidget {
-  final Movie movie;
+  final dynamic movie;
   final VoidCallback onTap;
 
   const _MovieCard({required this.movie, required this.onTap});

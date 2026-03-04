@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'pages/home_screen.dart';
 
 void main() {
-  runApp(const MovieApp());
+  runApp(const ProviderScope(child: MovieApp()));
 }
 
 class MovieApp extends StatelessWidget {
